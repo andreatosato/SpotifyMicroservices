@@ -1,0 +1,75 @@
+version: '3.4'
+
+services:
+  spotifybackend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "80"
+
+  spotifyfrontend-dapr:
+    command: ["./daprd",
+      "-app-id", "spotifyfrontend",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/configuration.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+
+  spotifybackend-dapr:
+    command: ["./daprd",
+      "-app-id", "spotifybackend",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/configuration.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+      
+  albums-dapr:
+    command: ["./daprd",
+      "-app-id", "albums",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/configuration.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+  artists-dapr:
+    command: ["./daprd",
+      "-app-id", "artists",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/configuration.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+
+  songs-dapr:
+    command: ["./daprd",
+      "-app-id", "songs",
+      "-app-port", "80",
+      "-components-path", "/components",
+      "-config", "/configuration/configuration.yaml"
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+
+  rabbitmq:
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
+  redis:
+    ports:
+    - "6379:6379"
+  
+  zipkin:
+    ports:
+      - "9411:9411"

@@ -1,0 +1,82 @@
+services:
+  spotifyfrontend:
+    image: spotify/frontend
+    build:
+      context: .
+      dockerfile: Frontend/SpotifyFrontend.Web/Dockerfile
+  
+  spotifyfrontend-dapr:
+    container_name: spotifyfrontend-dapr
+    image: "daprio/daprd:1.5.0"
+    network_mode: "service:spotifyfrontend"
+    depends_on:
+      - spotifyfrontend
+
+  spotifybackend:
+    image: spotify/backend
+    build:
+      context: .
+      dockerfile: Gateways/SpotifyBackend/Dockerfile
+  
+  spotifybackend-dapr:
+    container_name: spotifybackend-dapr
+    image: "daprio/daprd:1.5.0"
+    network_mode: "service:spotifybackend"
+    depends_on:
+      - spotifybackend
+    
+  albums:
+    image: spotify/albums
+    build:
+      context: .
+      dockerfile: APIs/SpotifyAlbums.WebApi/Dockerfile
+
+  albums-dapr:
+    container_name: albums-dapr
+    image: "daprio/daprd:1.5.0"
+    network_mode: "service:albums"
+    depends_on:
+      - albums
+    
+  artists:
+    image: spotify/artists
+    build:
+      context: .
+      dockerfile: APIs/SpotifyArtists.WebApi/Dockerfile
+
+  artists-dapr:
+    container_name: artists-dapr
+    image: "daprio/daprd:1.5.0"
+    network_mode: "service:artists"
+    depends_on:
+      - albums
+    
+  songs:
+    image: spotify/songs
+    build:
+      context: .
+      dockerfile: APIs/SpotifySongs.WebApi/Dockerfile
+
+  songs-dapr:
+    container_name: songs-dapr
+    image: "daprio/daprd:1.5.0"
+    network_mode: "service:songs"
+    depends_on:
+      - songs
+
+# Components
+  #Pub-Sub
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+
+  #State
+  redis:
+    container_name: redis
+    image: redis:alpine
+
+  # Observability
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin-slim
+# Components
