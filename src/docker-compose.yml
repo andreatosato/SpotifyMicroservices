@@ -1,6 +1,7 @@
 services:
   spotifyfrontend:
     image: spotify/frontend
+    container_name: spotifyfrontend
     build:
       context: .
       dockerfile: Frontend/SpotifyFrontend.Web/Dockerfile
@@ -14,6 +15,7 @@ services:
 
   spotifybackend:
     image: spotify/backend
+    container_name: spotifybackend
     build:
       context: .
       dockerfile: Gateways/SpotifyBackend/Dockerfile
@@ -27,6 +29,7 @@ services:
     
   albums:
     image: spotify/albums
+    container_name: albums
     build:
       context: .
       dockerfile: APIs/SpotifyAlbums.WebApi/Dockerfile
@@ -40,6 +43,7 @@ services:
     
   artists:
     image: spotify/artists
+    container_name: artists
     build:
       context: .
       dockerfile: APIs/SpotifyArtists.WebApi/Dockerfile
@@ -53,6 +57,7 @@ services:
     
   songs:
     image: spotify/songs
+    container_name: songs
     build:
       context: .
       dockerfile: APIs/SpotifySongs.WebApi/Dockerfile

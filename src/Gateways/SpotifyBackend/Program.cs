@@ -1,8 +1,17 @@
+using Dapr.Client;
+using Dapr.Extensions.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddDapr();
+
+//TODO: SECRETS
+builder.Configuration.AddDaprSecretStore("demosecrets", new DaprClientBuilder().Build(), new[] { ":" });
+var stringSecret = builder.Configuration["super-secret"];
+//TODO: SECRETS
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
