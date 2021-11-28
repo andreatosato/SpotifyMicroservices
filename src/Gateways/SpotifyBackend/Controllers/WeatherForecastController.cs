@@ -1,3 +1,4 @@
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SpotifyBackend.Controllers
@@ -13,7 +14,7 @@ namespace SpotifyBackend.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration, DaprClient daprClient)
         {
             _logger = logger;
             Configuration = configuration;
