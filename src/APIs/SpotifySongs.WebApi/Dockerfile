@@ -7,6 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["SpotifySongs.WebApi/SpotifySongs.WebApi.csproj", "SpotifySongs.WebApi/"]
+COPY ["Shared/Spotify.Shared/Spotify.Shared.csproj", "Spotify.Shared/"]
 RUN dotnet restore "SpotifySongs.WebApi/SpotifySongs.WebApi.csproj"
 COPY . .
 WORKDIR "/src/SpotifySongs.WebApi"

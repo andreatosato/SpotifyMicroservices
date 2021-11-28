@@ -1,8 +1,11 @@
 using System.Net.Mime;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
+using SpotifyAPI.Web;
 using SpotifyBackend.Settings;
+using SearchRequest = Spotify.Shared.Models.SearchRequest;
 
 namespace SpotifyBackend.Controllers;
 
@@ -21,8 +24,18 @@ public class SpotifyController : ControllerBase
     }
 
     [HttpGet("{deviceId}/search")]
-    public IActionResult Get(string deviceId, [FromQuery(Name = "q")] string searchText)
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> Get(string deviceId, [FromQuery(Name = "q"), BindRequired] string searchText)
     {
+        var config = SpotifyClientConfig.CreateDefault();
+
+        var request = new ClientCredentialsRequest(spotifySettings.ClientId!, spotifySettings.ClientSecret!);
+        var response = await new OAuthClient(config).RequestToken(request);
+
+        var searchRequest = new SearchRequest(deviceId, response.AccessToken, searchText);
+        await daprClient.PublishEventAsync("pubsub", "search", searchRequest);
+
         return Accepted();
     }
 }

@@ -26,6 +26,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3AD46A54-75D3-43E3-83D3-7B487606DAA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify.Shared", "Shared\Spotify.Shared\Spotify.Shared.csproj", "{94BE315A-BAB7-4E29-8979-CC458C694EC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +60,10 @@ Global
 		{359FB279-5A99-483F-8A3F-4D2EC13A2603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{359FB279-5A99-483F-8A3F-4D2EC13A2603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{359FB279-5A99-483F-8A3F-4D2EC13A2603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94BE315A-BAB7-4E29-8979-CC458C694EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94BE315A-BAB7-4E29-8979-CC458C694EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94BE315A-BAB7-4E29-8979-CC458C694EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94BE315A-BAB7-4E29-8979-CC458C694EC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -66,6 +74,7 @@ Global
 		{A551AC0B-BD78-430F-BB58-B39724CCD7BC} = {BE2DC304-3734-4E2B-B9F2-9A68807C802F}
 		{0C3186FC-CCA5-44E6-8FBB-8CDFD83AAA9A} = {8B1B2D89-8C25-436B-92A4-83F2176CAB9B}
 		{359FB279-5A99-483F-8A3F-4D2EC13A2603} = {AD324711-1CFB-4F40-873A-192FD19961FC}
+		{94BE315A-BAB7-4E29-8979-CC458C694EC2} = {3AD46A54-75D3-43E3-83D3-7B487606DAA4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AAFC218F-B14B-42C9-B0BE-69D970CE6439}
