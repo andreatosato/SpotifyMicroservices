@@ -17,6 +17,7 @@ app.UseSwaggerUI(options =>
 });
 
 app.UseCloudEvents();
+app.MapSubscribeHandler();
 app.MapControllers();
 
 app.Run();

@@ -24,6 +24,9 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Spotify Backend API v1");
 });
 
+app.UseCloudEvents();
+app.MapSubscribeHandler();
 app.MapControllers();
+
 
 app.Run();
