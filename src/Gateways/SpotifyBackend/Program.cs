@@ -1,5 +1,6 @@
 using Dapr.Client;
 using Dapr.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

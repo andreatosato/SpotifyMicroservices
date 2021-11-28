@@ -19,7 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyBackend", "Gateways\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{AD324711-1CFB-4F40-873A-192FD19961FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyFrontend.Web", "Frontend\SpotifyFrontend.Web\SpotifyFrontend.Web.csproj", "{359FB279-5A99-483F-8A3F-4D2EC13A2603}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpotifyFrontend.Web", "Frontend\SpotifyFrontend.Web\SpotifyFrontend.Web.csproj", "{359FB279-5A99-483F-8A3F-4D2EC13A2603}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{36AD8416-AEBE-4DB1-BC8B-AA74ABEEF07B}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
