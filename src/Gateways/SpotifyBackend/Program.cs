@@ -3,7 +3,7 @@ using Dapr.Extensions.Configuration;
 using SpotifyBackend.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Configuration.AddDaprSecretStore("secrets", new DaprClientBuilder().Build(), new[] { ":" });
+builder.Configuration.AddDaprSecretStore("appsecrets", new DaprClientBuilder().Build(), new[] { ":" });
 
 // Add services to the container.
 builder.Services.AddControllers().AddDapr();
