@@ -28,7 +28,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{3AD46A54-75D3-43E3-83D3-7B487606DAA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spotify.Shared", "Shared\Spotify.Shared\Spotify.Shared.csproj", "{94BE315A-BAB7-4E29-8979-CC458C694EC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spotify.Shared", "Shared\Spotify.Shared\Spotify.Shared.csproj", "{94BE315A-BAB7-4E29-8979-CC458C694EC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dapr", "Dapr", "{A5C4A9A2-4CCD-42AE-A32F-847D711A03F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configuration", "configuration", "{07874EF9-75EB-4767-B899-212705C04C38}"
+	ProjectSection(SolutionItems) = preProject
+		dapr\configuration\configuration.yaml = dapr\configuration\configuration.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", "{EF91796F-BD74-42D0-BF77-F5DD9BE53B69}"
+	ProjectSection(SolutionItems) = preProject
+		dapr\components\rabbit.yaml = dapr\components\rabbit.yaml
+		dapr\components\redis.yaml = dapr\components\redis.yaml
+		dapr\components\secrets-store.yaml = dapr\components\secrets-store.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +89,8 @@ Global
 		{0C3186FC-CCA5-44E6-8FBB-8CDFD83AAA9A} = {8B1B2D89-8C25-436B-92A4-83F2176CAB9B}
 		{359FB279-5A99-483F-8A3F-4D2EC13A2603} = {AD324711-1CFB-4F40-873A-192FD19961FC}
 		{94BE315A-BAB7-4E29-8979-CC458C694EC2} = {3AD46A54-75D3-43E3-83D3-7B487606DAA4}
+		{07874EF9-75EB-4767-B899-212705C04C38} = {A5C4A9A2-4CCD-42AE-A32F-847D711A03F6}
+		{EF91796F-BD74-42D0-BF77-F5DD9BE53B69} = {A5C4A9A2-4CCD-42AE-A32F-847D711A03F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AAFC218F-B14B-42C9-B0BE-69D970CE6439}

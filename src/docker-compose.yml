@@ -19,6 +19,8 @@ services:
     build:
       context: .
       dockerfile: Gateways/SpotifyBackend/Dockerfile
+    depends_on:
+      - rabbitmq
   
   spotifybackend-dapr:
     container_name: spotifybackend-dapr
@@ -33,6 +35,9 @@ services:
     build:
       context: .
       dockerfile: APIs/SpotifyAlbums.WebApi/Dockerfile
+    depends_on:
+      - spotifybackend
+      - rabbitmq
 
   albums-dapr:
     container_name: albums-dapr
@@ -47,6 +52,9 @@ services:
     build:
       context: .
       dockerfile: APIs/SpotifyArtists.WebApi/Dockerfile
+    depends_on:
+      - spotifybackend
+      - rabbitmq
 
   artists-dapr:
     container_name: artists-dapr
@@ -61,6 +69,9 @@ services:
     build:
       context: .
       dockerfile: APIs/SpotifySongs.WebApi/Dockerfile
+    depends_on:
+    - spotifybackend
+    - rabbitmq
 
   songs-dapr:
     container_name: songs-dapr

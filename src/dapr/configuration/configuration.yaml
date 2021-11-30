@@ -1,8 +1,14 @@
-tracing:
-  samplingRate: "1"
-  zipkin:
-    #endpointAddress: "http://zipkin.default.svc.cluster.local:9411/api/v2/spans"
-    endpointAddress: "http://zipkin:9411/api/v2/spans"
-metrics:
-  enabled: true
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+    name: config
+    namespace: default
+spec:
+    tracing:
+      samplingRate: "1"
+      zipkin:
+        #endpointAddress: "http://zipkin.default.svc.cluster.local:9411/api/v2/spans"
+        endpointAddress: "http://zipkin:9411/api/v2/spans"
+    metrics:
+      enabled: true
 
