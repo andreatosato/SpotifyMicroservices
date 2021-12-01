@@ -11,7 +11,7 @@ namespace SpotifyAlbums.WebApi.Controllers;
 public class SearchController : ControllerBase
 {
     [Topic("pubsub", "search")]
-    [HttpPost(Name = "search")]
+    [HttpPost]
     public async Task<IActionResult> Search(Spotify.Shared.Models.SearchRequest searchRequest)
     {
         var spotify = new SpotifyClient(searchRequest.AccessToken);

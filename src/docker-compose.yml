@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Gateways/SpotifyBackend/Dockerfile
     depends_on:
-      - rabbitmq
+      - redis
   
   spotifybackend-dapr:
     container_name: spotifybackend-dapr
@@ -37,7 +37,7 @@ services:
       dockerfile: APIs/SpotifyAlbums.WebApi/Dockerfile
     depends_on:
       - spotifybackend
-      - rabbitmq
+      - redis
 
   albums-dapr:
     container_name: albums-dapr
@@ -54,7 +54,7 @@ services:
       dockerfile: APIs/SpotifyArtists.WebApi/Dockerfile
     depends_on:
       - spotifybackend
-      - rabbitmq
+      - redis
 
   artists-dapr:
     container_name: artists-dapr
@@ -71,7 +71,7 @@ services:
       dockerfile: APIs/SpotifySongs.WebApi/Dockerfile
     depends_on:
     - spotifybackend
-    - rabbitmq
+    - redis
 
   songs-dapr:
     container_name: songs-dapr
@@ -81,12 +81,7 @@ services:
       - songs
 
 # Components
-  #Pub-Sub
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3-management-alpine
-
-  #State
+  #Pub-Sub & State
   redis:
     container_name: redis
     image: redis:alpine
