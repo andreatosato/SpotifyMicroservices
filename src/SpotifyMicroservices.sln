@@ -39,7 +39,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configuration", "configurat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", "{EF91796F-BD74-42D0-BF77-F5DD9BE53B69}"
 	ProjectSection(SolutionItems) = preProject
-		dapr\components\rabbit.yaml = dapr\components\rabbit.yaml
 		dapr\components\redis.yaml = dapr\components\redis.yaml
 		dapr\components\secrets-store.yaml = dapr\components\secrets-store.yaml
 	EndProjectSection
