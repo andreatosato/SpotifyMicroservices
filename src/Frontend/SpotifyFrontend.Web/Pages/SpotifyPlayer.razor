@@ -1,0 +1,29 @@
+﻿@page "/spotify"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Spotify.Shared.Models;
+@inject IJSRuntime runtime
+
+<h3>SpotifyPlayer</h3>
+
+<iframe src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var url = "http://spotifyfrontend/notification";
+        var connection = new HubConnectionBuilder()
+            .WithUrl(url)
+            .WithAutomaticReconnect()
+            .Build();
+        connection.On<Album>("albumNews", OnAlbumProcessed);
+
+        await connection.StartAsync();
+    }
+
+    private async Task OnAlbumProcessed(Album @event)
+    {
+        //Events.Add(@event);
+        StateHasChanged();
+    }
+}

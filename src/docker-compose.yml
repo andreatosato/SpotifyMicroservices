@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: Frontend/SpotifyFrontend.Web/Dockerfile
+    ports:
+    - 8082:80
   
   spotifyfrontend-dapr:
     container_name: spotifyfrontend-dapr

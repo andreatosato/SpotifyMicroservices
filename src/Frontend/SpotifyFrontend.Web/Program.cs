@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.SignalR;
+using Spotify.Shared.Models;
 using SpotifyFrontend.Web.Data;
+using SpotifyFrontend.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddDapr();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
@@ -19,10 +20,22 @@ if (!app.Environment.IsDevelopment())
 
 
 app.UseStaticFiles();
-
+app.UseCloudEvents();
 app.UseRouting();
 
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapHub<NotificationHub>("/notification");
+    endpoints.MapBlazorHub();
+    endpoints.MapFallbackToPage("/_Host");
+    endpoints.MapSubscribeHandler();
+    endpoints.MapPost("albums", async (IEnumerable<Album> albums, IHubContext<NotificationHub> notificationHub) =>
+    {
+        await notificationHub.Clients.All.SendAsync("albumNews", albums);
+    })
+    .WithTopic("pubsub", "AlbumsResearched");
+});
 
 app.Run();
+
