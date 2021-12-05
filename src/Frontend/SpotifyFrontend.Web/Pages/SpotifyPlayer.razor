@@ -5,25 +5,90 @@
 
 <h3>SpotifyPlayer</h3>
 
-<iframe src="https://open.spotify.com/embed/album/1DFixLWuPkv3KT3TnV35m3" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+<div>
+    DeviceId: @(deviceId)
+</div>
 
+Albums:
+@if(albums != null)
+{
+    @foreach(var album in albums)
+    {
+        <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    }
+}
+
+<br />
+
+
+Songs:
+@if(songs != null)
+{
+    @foreach(var song in songs)
+    {
+        <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    }
+}
+
+<br />
+
+Artists:
+@if(artists != null)
+{
+    @foreach(var artist in artists)
+    {
+        <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    }
+}
+
+<br />
 
 @code {
+    private HubConnection connection;
+    private IEnumerable<Album> albums;
+    private IEnumerable<Song> songs;
+    private IEnumerable<Artist> artists;
+    private string deviceId = Guid.NewGuid().ToString();
+
     protected override async Task OnInitializedAsync()
     {
         var url = "http://spotifyfrontend/notification";
-        var connection = new HubConnectionBuilder()
+        connection = new HubConnectionBuilder()
             .WithUrl(url)
             .WithAutomaticReconnect()
             .Build();
-        connection.On<Album>("albumNews", OnAlbumProcessed);
-
-        await connection.StartAsync();
+        connection.On<IEnumerable<Album>>("albumNews", OnAlbumProcessed);
+        connection.On<IEnumerable<Song>>("songsNews", OnSongsProcessed);
+        connection.On<IEnumerable<Artist>>("artistsNews", OnArtistsProcessed);
     }
 
-    private async Task OnAlbumProcessed(Album @event)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //Events.Add(@event);
+        if (firstRender)
+        {
+            await connection.StartAsync();
+            await connection.SendAsync("SetDeviceId", deviceId);
+        }
+    }
+
+    private Task OnAlbumProcessed(IEnumerable<Album> @event)
+    {
+        albums = @event;
         StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnArtistsProcessed(IEnumerable<Artist> @event)
+    {
+        artists = @event;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task OnSongsProcessed(IEnumerable<Song> @event)
+    {
+        songs = @event;
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 }

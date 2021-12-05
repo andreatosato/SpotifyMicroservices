@@ -48,7 +48,7 @@ public class SearchController : ControllerBase
         }).ToList();
 
         if(albums!= null)
-            await daprClient.PublishEventAsync("pubsub", "AlbumsResearched", albums);
+            await daprClient.PublishEventAsync("pubsub", "AlbumsResearched", new AlbumNotification { Data = albums, DeviceId = searchRequest.DeviceId });
 
         return NoContent();
     }

@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Dapr;
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Spotify.Shared.Models;
 using SpotifySearchRequest = SpotifyAPI.Web.SearchRequest;
@@ -11,6 +12,13 @@ namespace SpotifySongs.WebApi.Controllers;
 [Produces(MediaTypeNames.Application.Json)]
 public class SearchController : ControllerBase
 {
+    private readonly DaprClient daprClient;
+
+    public SearchController(DaprClient daprClient)
+    {
+        this.daprClient = daprClient;
+    }
+
     [Topic("pubsub", "search")]
     [HttpPost]
     public async Task<IActionResult> Search(SearchRequest searchRequest)
@@ -53,7 +61,10 @@ public class SearchController : ControllerBase
                     Width = i.Width
                 })
             } : null
-        });
+        }).ToList();
+
+        if (songs != null)
+            await daprClient.PublishEventAsync("pubsub", "SongResearched", new SongNotification { Data = songs, DeviceId = searchRequest.DeviceId });
 
         return NoContent();
     }
