@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR;
+using MudBlazor.Services;
 using Spotify.Shared.Models;
 using SpotifyFrontend.Web.Data;
 using SpotifyFrontend.Web.Hubs;
@@ -8,7 +7,7 @@ using SpotifyFrontend.Web.Hubs;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages().AddDapr();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddMudServices();
 builder.Services.AddSingleton<ClientService>();
 
 var app = builder.Build();

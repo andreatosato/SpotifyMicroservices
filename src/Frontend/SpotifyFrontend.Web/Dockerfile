@@ -15,6 +15,7 @@ RUN dotnet build "SpotifyFrontend.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "SpotifyFrontend.Web.csproj" -c Release -o /app/publish
+COPY /app/wwwroot/_content/ /app/publish/wwwroot/
 
 FROM base AS final
 WORKDIR /app

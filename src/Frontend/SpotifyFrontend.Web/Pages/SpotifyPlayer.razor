@@ -5,43 +5,75 @@
 
 <h3>SpotifyPlayer</h3>
 
-<div>
-    DeviceId: @(deviceId)
-</div>
-
-Albums:
-@if(albums != null)
-{
-    @foreach(var album in albums)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
-
-
-Songs:
-@if(songs != null)
-{
-    @foreach(var song in songs)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
-
-Artists:
-@if(artists != null)
-{
-    @foreach(var artist in artists)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
+<MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Device Session Id: @(deviceId)</MudText>
+<MudGrid Class="mt-8">
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Albums</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(albums != null)
+                    {
+                        @foreach(var album in albums)
+                        {
+                            <MudListItem Icon="@Icons.Material.Filled.Album">
+                                <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+       <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Songs</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(songs != null)
+                    {
+                        @foreach(var song in songs)
+                        {
+                            <MudListItem Icon="@Icons.Material.Filled.Album">
+                                 <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Artists</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(artists != null)
+                    {
+                        @foreach(var artist in artists)
+                        {
+                            <MudListItem Icon="@Icons.Material.Filled.Album">
+                                 <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
 
 @code {
     private HubConnection connection;
@@ -50,7 +82,7 @@ Artists:
     private IEnumerable<Artist> artists;
     private string deviceId = Guid.NewGuid().ToString();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var url = "http://spotifyfrontend/notification";
         connection = new HubConnectionBuilder()
