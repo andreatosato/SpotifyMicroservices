@@ -1,19 +1,51 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>SpotifyFrontend.Web</PageTitle>
+<MudThemeProvider Theme="@XmasTheme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        Spotify XmasDev
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+    MudTheme XmasTheme = new MudTheme()
+    {
+        Palette = new Palette()
+        {
+            Primary = Colors.Shades.White,
+            Secondary = Colors.Red.Accent4,
+            AppbarBackground = Colors.Red.Darken4,
+            DrawerBackground = Colors.Red.Darken4,
+            DrawerIcon = Colors.Red.Default,
+            DrawerText = Colors.Shades.White,
+            Background = Colors.Red.Default,
+            TextPrimary = Colors.Shades.White,
+            TextDisabled = Colors.Shades.Black,
+            TextSecondary = Colors.LightBlue.Default,
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DrawerWidthLeft = "260px",
+            DrawerWidthRight = "300px"
+        }
+    };
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

@@ -7,6 +7,12 @@ services:
     ports:
       - "80"
 
+  spotifyfrontend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+    - 8042:80
+
   spotifyfrontend-dapr:
     command: ["./daprd",
       "-app-id", "spotifyfrontend",

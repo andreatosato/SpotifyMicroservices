@@ -1,47 +1,17 @@
 ﻿@page "/spotify"
+@using Dapr.Client
 @using Microsoft.AspNetCore.SignalR.Client
 @using Spotify.Shared.Models;
 @inject IJSRuntime runtime
+@inject DaprClient daprClient
 
-<h3>SpotifyPlayer</h3>
-
-<div>
-    DeviceId: @(deviceId)
-</div>
-
-Albums:
-@if(albums != null)
-{
-    @foreach(var album in albums)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
-
-
-Songs:
-@if(songs != null)
-{
-    @foreach(var song in songs)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
-
-Artists:
-@if(artists != null)
-{
-    @foreach(var artist in artists)
-    {
-        <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-    }
-}
-
-<br />
+<MudText Typo="Typo.h5" Align="Align.Center" GutterBottom="true">Device Session Id: @(deviceId)</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="12" md="12">
+        <MudTextField T="string" ValueChanged="@OnSelect" Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
+    </MudItem>
+</MudGrid>
+<SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs" ></SpotifyComponent>
 
 @code {
     private HubConnection connection;
@@ -50,7 +20,7 @@ Artists:
     private IEnumerable<Artist> artists;
     private string deviceId = Guid.NewGuid().ToString();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var url = "http://spotifyfrontend/notification";
         connection = new HubConnectionBuilder()
@@ -69,6 +39,11 @@ Artists:
             await connection.StartAsync();
             await connection.SendAsync("SetDeviceId", deviceId);
         }
+    }
+
+    private async Task OnSelect(string search)
+    {
+        await daprClient.InvokeMethodAsync(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/search?q={search}");
     }
 
     private Task OnAlbumProcessed(IEnumerable<Album> @event)
