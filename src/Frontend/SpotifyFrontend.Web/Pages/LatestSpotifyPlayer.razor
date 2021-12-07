@@ -1,0 +1,29 @@
+﻿@page "/latest-spotify"
+@using Dapr.Client
+@using Microsoft.AspNetCore.SignalR.Client
+@using Spotify.Shared.Models;
+@inject IJSRuntime runtime
+@inject DaprClient daprClient
+
+<MudText Typo="Typo.h5" Align="Align.Center" GutterBottom="true">Device Session Id: @(deviceId)</MudText>
+<SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs" ></SpotifyComponent>
+
+@code {
+    private IEnumerable<Album> albums;
+    private IEnumerable<Song> songs;
+    private IEnumerable<Artist> artists;
+    private string deviceId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var albumSongArtist = await daprClient.InvokeMethodAsync<Latest>(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/latest");
+
+    }
+
+    class Latest
+    {
+        private IEnumerable<Album> albums;
+        private IEnumerable<Song> songs;
+        private IEnumerable<Artist> artists;        
+    }
+}

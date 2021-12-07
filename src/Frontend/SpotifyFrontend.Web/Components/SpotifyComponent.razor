@@ -1,0 +1,81 @@
+﻿@using Spotify.Shared.Models;
+<MudGrid Class="mt-8">
+    <MudItem xs="12" sm="6" md="4">
+        <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Albums</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(Albums != null)
+                    {
+                        @foreach(var album in Albums)
+                        {
+                            <MudListItem>
+                                <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+       <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Songs</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(Songs != null)
+                    {
+                        @foreach(var song in Songs)
+                        {
+                            <MudListItem>
+                                 <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="4">
+        <MudCard Elevation="25" Class="rounded-lg pb-4">
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h5" Align="Align.Center">Artists</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList Class="mx-auto mt-4" Style="width:300px;">
+                    @if(Artists != null)
+                    {
+                        @foreach(var artist in Artists)
+                        {
+                            <MudListItem>
+                                 <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            </MudListItem>
+                        }
+                    }
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public IEnumerable<Album> Albums { get; set; }
+
+    [Parameter]
+    public IEnumerable<Song> Songs { get; set; }
+    
+    [Parameter]
+    public IEnumerable<Artist> Artists { get; set; }
+
+}

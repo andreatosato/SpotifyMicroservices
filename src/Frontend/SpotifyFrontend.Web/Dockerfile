@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Frontend/SpotifyFrontend.Web/SpotifyFrontend.Web.csproj", "Frontend/SpotifyFrontend.Web/"]
-COPY ["Shared/Spotify.Shared/Spotify.Shared.csproj", "Spotify.Shared/"]
+COPY ["Shared/Spotify.Shared/Spotify.Shared.csproj", "Shared/Spotify.Shared/"]
 RUN dotnet restore "Frontend/SpotifyFrontend.Web/SpotifyFrontend.Web.csproj"
 COPY . .
 WORKDIR "/src/Frontend/SpotifyFrontend.Web"
@@ -15,7 +15,6 @@ RUN dotnet build "SpotifyFrontend.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "SpotifyFrontend.Web.csproj" -c Release -o /app/publish
-COPY /app/wwwroot/_content/ /app/publish/wwwroot/
 
 FROM base AS final
 WORKDIR /app
