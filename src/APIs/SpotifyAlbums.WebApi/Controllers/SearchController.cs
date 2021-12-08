@@ -50,6 +50,25 @@ public class SearchController : ControllerBase
         if(albums!= null)
             await daprClient.PublishEventAsync("pubsub", "AlbumsResearched", new AlbumNotification { Data = albums, DeviceId = searchRequest.DeviceId });
 
+        // Conservo le ultime 5 ricerche
+        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{searchRequest.DeviceId}") ?? new();
+        var albumStore = new AlbumStore()
+        {
+            Data = albums,
+            DeviceId = searchRequest.DeviceId,
+            SearchText = searchRequest.SearchText
+        };
+        latestStore.Insert(0, albumStore);
+        await daprClient.SaveStateAsync("state-managment", $"latest-{searchRequest.DeviceId}", latestStore.Take(5));
+
         return NoContent();
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetLatestAsync(string deviceId)
+    {
+        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{deviceId}");
+        return Ok(latestStore);
     }
 }

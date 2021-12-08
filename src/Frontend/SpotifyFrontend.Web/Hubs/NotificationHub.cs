@@ -12,10 +12,11 @@ public class NotificationHub : Hub
         this.clientService = clientService;
     }
 
-    public override Task OnConnectedAsync()
+    public override async Task OnConnectedAsync()
     {
+        await base.OnConnectedAsync();
         clientService.DeviceClient.Add(new DeviceClient(Context.ConnectionId));
-        return base.OnConnectedAsync();
+        await Clients.Caller.SendAsync("UpdateDeviceId", Context.ConnectionId);
     }
 
     public void SetDeviceId(string deviceId)

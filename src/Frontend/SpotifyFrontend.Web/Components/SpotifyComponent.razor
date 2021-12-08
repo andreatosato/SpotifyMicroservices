@@ -13,7 +13,7 @@
                     {
                         @foreach(var album in Albums)
                         {
-                            <MudListItem>
+                            <MudListItem Style="height:50px">
                                 <iframe src="@($"https://open.spotify.com/embed/album/{album.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                             </MudListItem>
                         }
@@ -35,8 +35,17 @@
                     {
                         @foreach(var song in Songs)
                         {
-                            <MudListItem>
-                                 <iframe src="@($"https://open.spotify.com/embed/song/{song.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                            <MudListItem Style="height:50px">
+                                @if(song.ExternalUrls?.Any()?? false)
+                                {
+                                    <MudButton Link="@song.ExternalUrls.First()"
+                                           Target="_blank"
+                                           Variant="Variant.Filled"
+                                           EndIcon="@Icons.Filled.MusicNote"
+                                           Color="Color.Primary">
+                                        @song.Name
+                                    </MudButton>
+                                }
                             </MudListItem>
                         }
                     }
@@ -57,7 +66,7 @@
                     {
                         @foreach(var artist in Artists)
                         {
-                            <MudListItem>
+                            <MudListItem Style="height:50px">
                                  <iframe src="@($"https://open.spotify.com/embed/artist/{artist.Id}")" width="200" height="50" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                             </MudListItem>
                         }

@@ -30,6 +30,7 @@
         connection.On<IEnumerable<Album>>("albumNews", OnAlbumProcessed);
         connection.On<IEnumerable<Song>>("songsNews", OnSongsProcessed);
         connection.On<IEnumerable<Artist>>("artistsNews", OnArtistsProcessed);
+        connection.On<string>("UpdateDeviceId", SetDeviceId);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -37,13 +38,19 @@
         if (firstRender)
         {
             await connection.StartAsync();
-            await connection.SendAsync("SetDeviceId", deviceId);
+            //await connection.SendAsync("SetDeviceId", deviceId);
         }
     }
 
     private async Task OnSelect(string search)
     {
         await daprClient.InvokeMethodAsync(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/search?q={search}");
+    }
+
+    private void SetDeviceId(string deviceId)
+    {
+        this.deviceId = deviceId;
+        StateHasChanged();
     }
 
     private Task OnAlbumProcessed(IEnumerable<Album> @event)

@@ -32,7 +32,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapSubscribeHandler();
     endpoints.MapPost("albums", async (AlbumNotification albumNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == albumNotification.DeviceId).First();
+        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == albumNotification.DeviceId).First();
         //await notificationHub.Clients.Client(deviceIdConnection.ConnectionId).SendAsync("albumNews", albumNotification.Data);
         await notificationHub.Clients.All.SendAsync("albumNews", albumNotification.Data);
     })
@@ -40,7 +40,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapPost("songs", async (SongNotification songNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == songNotification.DeviceId).First();
+        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == songNotification.DeviceId).First();
         //await notificationHub.Clients.Client(deviceIdConnection.ConnectionId).SendAsync("songsNews", songNotification.Data);
         await notificationHub.Clients.All.SendAsync("songsNews", songNotification.Data);
     })
@@ -48,7 +48,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapPost("artists", async (ArtistNotification artistNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == artistNotification.DeviceId).First();
+        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == artistNotification.DeviceId).First();
         //await notificationHub.Clients.Client(deviceIdConnection.ConnectionId).SendAsync("artistsNews", artistNotification.Data);
         await notificationHub.Clients.All.SendAsync("artistsNews", artistNotification.Data);
     })

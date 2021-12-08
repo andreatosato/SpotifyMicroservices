@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Spotify.Shared.Models;
+﻿namespace Spotify.Shared.Models;
 
 public abstract class BaseNotification<T> where T : class
 {
