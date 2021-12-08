@@ -3,6 +3,7 @@ using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
+using Spotify.Shared.Models;
 using SpotifyAPI.Web;
 using SpotifyBackend.Settings;
 using SearchRequest = Spotify.Shared.Models.SearchRequest;
@@ -37,5 +38,23 @@ public class SpotifyController : ControllerBase
         await daprClient.PublishEventAsync("pubsub", "search", searchRequest);
 
         return Accepted();
+    }
+
+    [HttpGet("{deviceId}/latest")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesDefaultResponseType]
+    public async Task<IActionResult> GetLatest(string deviceId)
+    {
+        var taskAlbums = daprClient.InvokeMethodAsync<List<AlbumStore>>(HttpMethod.Get, "albums", $"api/search/latest/{deviceId}");
+        var taskSongs = daprClient.InvokeMethodAsync<List<SongStore>>(HttpMethod.Get, "songs", $"api/search/latest/{deviceId}");
+        var taskArtists = daprClient.InvokeMethodAsync<List<ArtistStore>>(HttpMethod.Get, "artists", $"api/search/latest/{deviceId}");
+
+        await Task.WhenAll(taskAlbums, taskSongs, taskArtists);
+        return Ok(new StoreResult
+        {
+            AlbumsStore = await taskAlbums,
+            ArtistsStore = await taskArtists,
+            SongsStore = await taskSongs
+        });
     }
 }

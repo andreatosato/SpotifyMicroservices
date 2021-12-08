@@ -6,30 +6,45 @@
 @inject DaprClient daprClient
 
 <MudText Typo="Typo.h5" Align="Align.Center" GutterBottom="true">Device Session Id: @(deviceId)</MudText>
-<MudExpansionPanels MultiExpansion="true">
+<MudExpansionPanels MultiExpansion="true" Color="">
     <MudExpansionPanel Text="Search">
-        <MudGrid>
-            <MudItem xs="12" sm="12" md="12">
-                <MudTextField T="string" ValueChanged="@OnSelect" Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" />
-            </MudItem>
-        </MudGrid>
-        <SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs" ></SpotifyComponent>
+        <TitleContent>
+            <div class="d-flex">
+                <MudIcon Icon="@Icons.Material.Filled.Search" class="mr-3" Color="Color.Primary"></MudIcon>
+                <MudText Color="Color.Primary">Search</MudText>
+            </div>
+        </TitleContent>
+        <ChildContent>
+             <MudGrid>
+                <MudItem xs="12" sm="12" md="12">
+                    <MudTextField T="string" ValueChanged="@OnSelect" Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" Style="color:red;" />
+                </MudItem>
+            </MudGrid>
+            <SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs" ></SpotifyComponent>
+        </ChildContent>
     </MudExpansionPanel>
-    <MudExpansionPanel Text="Panel Two">
-        <MudGrid>
-            <MudItem xs="12" sm="12" md="12">
-                <MudButton OnClick="UpdateLatest" Variant="Variant.Filled" Color="Color.Primary"></MudButton>
-            </MudItem>
-        </MudGrid>
-        @if(latestResult!= null)
-        {
-            <SpotifyComponent 
-                Artists="@latestResult.ArtistsStore.SelectMany(a => a.Data)"
-                Albums="@latestResult.AlbumsStore.SelectMany(a => a.Data)"
-                Songs="@latestResult.SongsStore.SelectMany(a => a.Data)">
-            </SpotifyComponent>
-        }
-        
+    <MudExpansionPanel>
+        <TitleContent>
+            <div class="d-flex">
+                <MudIcon Icon="@Icons.Material.Filled.SavedSearch" class="mr-3" Color="Color.Primary"></MudIcon>
+                <MudText Color="Color.Primary">Latest Search</MudText>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudGrid>
+                <MudItem xs="12" sm="12" md="12">
+                    <MudButton OnClick="UpdateLatest" Variant="Variant.Filled" Color="Color.Primary">Get Latest Search</MudButton>
+                </MudItem>
+            </MudGrid>
+            @if(latestResult!= null)
+            {
+                <SpotifyComponent 
+                    Artists="@latestResult.ArtistsStore.SelectMany(a => a.Data)"
+                    Albums="@latestResult.AlbumsStore.SelectMany(a => a.Data)"
+                    Songs="@latestResult.SongsStore.SelectMany(a => a.Data)">
+                </SpotifyComponent>
+            }
+        </ChildContent>
     </MudExpansionPanel>
 </MudExpansionPanels>
 
@@ -60,7 +75,6 @@
         if (firstRender)
         {
             await connection.StartAsync();
-            //await connection.SendAsync("SetDeviceId", deviceId);
         }
     }
 
@@ -99,6 +113,7 @@
     private async Task UpdateLatest()
     {
         // Aggiorna le ultime ricerche
+        latestResult = await daprClient.InvokeMethodAsync<StoreResult>(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/latest");
         StateHasChanged();
     }
 }

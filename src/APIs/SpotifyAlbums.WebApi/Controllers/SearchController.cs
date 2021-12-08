@@ -48,27 +48,29 @@ public class SearchController : ControllerBase
         }).Take(3).ToList();
 
         if(albums!= null)
+        {
             await daprClient.PublishEventAsync("pubsub", "AlbumsResearched", new AlbumNotification { Data = albums, DeviceId = searchRequest.DeviceId });
 
-        // Conservo le ultime 5 ricerche
-        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{searchRequest.DeviceId}") ?? new();
-        var albumStore = new AlbumStore()
-        {
-            Data = albums,
-            DeviceId = searchRequest.DeviceId,
-            SearchText = searchRequest.SearchText
-        };
-        latestStore.Insert(0, albumStore);
-        await daprClient.SaveStateAsync("state-managment", $"latest-{searchRequest.DeviceId}", latestStore.Take(5));
+            // Conservo le ultime 5 ricerche
+            var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{searchRequest.DeviceId}") ?? new();
+            var albumStore = new AlbumStore()
+            {
+                Data = albums,
+                DeviceId = searchRequest.DeviceId,
+                SearchText = searchRequest.SearchText
+            };
+            latestStore.Insert(0, albumStore);
+            await daprClient.SaveStateAsync("state-managment", $"latest-{searchRequest.DeviceId}", latestStore.Take(5));
+        }
 
         return NoContent();
     }
 
 
-    [HttpGet]
-    public async Task<IActionResult> GetLatestAsync(string deviceId)
+    [HttpGet("latest/{deviceId}")]
+    public async Task<IActionResult> GetLatestAsync([FromRoute]string deviceId)
     {
-        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{deviceId}");
+        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{deviceId}") ?? new();
         return Ok(latestStore);
     }
 }

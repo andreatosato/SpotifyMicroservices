@@ -68,4 +68,11 @@ public class SearchController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("latest/{deviceId}")]
+    public async Task<IActionResult> GetLatestAsync([FromRoute] string deviceId)
+    {
+        var latestStore = await daprClient.GetStateAsync<List<SongStore>>("state-managment", $"latest-{deviceId}") ?? new List<SongStore>();
+        return Ok(latestStore);
+    }
 }
