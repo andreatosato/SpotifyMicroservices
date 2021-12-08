@@ -40,8 +40,7 @@ app.UseEndpoints(endpoints =>
 
     endpoints.MapPost("songs", async (SongNotification songNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == songNotification.DeviceId).First();
-        //await notificationHub.Clients.Client(deviceIdConnection.ConnectionId).SendAsync("songsNews", songNotification.Data);
+        //await notificationHub.Clients.Client(songNotification.DeviceId).SendAsync("songsNews", songNotification.Data);
         await notificationHub.Clients.All.SendAsync("songsNews", songNotification.Data);
     })
     .WithTopic("pubsub", "SongResearched");
