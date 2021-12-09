@@ -2,7 +2,9 @@ using System.Net.Mime;
 using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
+using Spotify.Shared;
 using Spotify.Shared.Models;
+using Spotify.Shared.Models.Notifications;
 using SpotifySearchRequest = SpotifyAPI.Web.SearchRequest;
 
 namespace SpotifyAlbums.WebApi.Controllers;
@@ -19,7 +21,7 @@ public class SearchController : ControllerBase
         this.daprClient = daprClient;
     }
 
-    [Topic("pubsub", "search")]
+    [Topic(Constants.PubSubName, Constants.SearchTopic)]
     [HttpPost]
     public async Task<IActionResult> Search(SearchRequest searchRequest)
     {
@@ -47,30 +49,38 @@ public class SearchController : ControllerBase
             })
         }).Take(3).ToList();
 
-        if(albums!= null)
+        if (albums != null)
         {
-            await daprClient.PublishEventAsync("pubsub", "AlbumsResearched", new AlbumNotification { Data = albums, DeviceId = searchRequest.DeviceId });
-
-            // Conservo le ultime 5 ricerche
-            var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{searchRequest.DeviceId}") ?? new();
-            var albumStore = new AlbumStore()
+            await daprClient.PublishEventAsync(Constants.PubSubName, Constants.AlbumsSearched, new AlbumNotification
             {
-                Data = albums,
+                Items = albums,
+                DeviceId = searchRequest.DeviceId
+            });
+
+            // Store the last 5 searches.
+            var storeKey = $"latest-{searchRequest.DeviceId}";
+            var latestSearches = await daprClient.GetStateAsync<List<AlbumStore>>(Constants.StoreName, storeKey) ?? new();
+
+            var albumStore = new AlbumStore
+            {
+                Items = albums,
                 DeviceId = searchRequest.DeviceId,
                 SearchText = searchRequest.SearchText
             };
-            latestStore.Insert(0, albumStore);
-            await daprClient.SaveStateAsync("state-managment", $"latest-{searchRequest.DeviceId}", latestStore.Take(5));
+
+            latestSearches.Insert(0, albumStore);
+            await daprClient.SaveStateAsync(Constants.StoreName, storeKey, latestSearches.Take(5));
         }
 
         return NoContent();
     }
 
-
     [HttpGet("latest/{deviceId}")]
-    public async Task<IActionResult> GetLatestAsync([FromRoute]string deviceId)
+    public async Task<IActionResult> GetLatestAsync([FromRoute] string deviceId)
     {
-        var latestStore = await daprClient.GetStateAsync<List<AlbumStore>>("state-managment", $"latest-{deviceId}") ?? new();
-        return Ok(latestStore);
+        var storeKey = $"latest-{deviceId}";
+        var latestSearches = await daprClient.GetStateAsync<List<AlbumStore>>(Constants.StoreName, storeKey) ?? new();
+
+        return Ok(latestSearches);
     }
 }

@@ -8,7 +8,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                @if(Albums != null)
+                @if (Albums != null)
                 {
                     @foreach(var album in Albums)
                     {
@@ -26,11 +26,11 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                @if(Songs != null)
+                @if (Songs != null)
                 {
-                    @foreach(var song in Songs)
+                    @foreach (var song in Songs)
                     {
-                        @if(song.ExternalUrls?.Any()?? false)
+                        @if (song.ExternalUrls?.Any()?? false)
                         {
                             <MudButton Link="@song.ExternalUrls.First()"
                                     Target="_blank"
@@ -53,7 +53,7 @@
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent>
-                    @if(Artists != null)
+                    @if (Artists != null)
                     {
                         @foreach(var artist in Artists)
                         {
@@ -67,12 +67,11 @@
 
 @code {
     [Parameter]
-    public IEnumerable<Album> Albums { get; set; }
+    public IEnumerable<Album>? Albums { get; set; }
 
     [Parameter]
-    public IEnumerable<Song> Songs { get; set; }
+    public IEnumerable<Song>? Songs { get; set; }
     
     [Parameter]
-    public IEnumerable<Artist> Artists { get; set; }
-
+    public IEnumerable<Artist>? Artists { get; set; }
 }

@@ -1,12 +1,14 @@
 ﻿@page "/spotify"
 @using Dapr.Client
 @using Microsoft.AspNetCore.SignalR.Client
+@using Spotify.Shared;
 @using Spotify.Shared.Models;
+
 @inject IJSRuntime runtime
 @inject DaprClient daprClient
 
 <MudText Typo="Typo.h5" Align="Align.Center" GutterBottom="true">Device Session Id: @(deviceId)</MudText>
-<MudExpansionPanels MultiExpansion="true" Color="">
+<MudExpansionPanels MultiExpansion="false" Color="">
     <MudExpansionPanel Text="Search">
         <TitleContent>
             <div class="d-flex">
@@ -20,28 +22,28 @@
                     <MudTextField T="string" ValueChanged="@OnSelect" Label="Search" Variant="Variant.Outlined" Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" AdornmentColor="Color.Secondary" Style="color:red;" />
                 </MudItem>
             </MudGrid>
-            <SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs" ></SpotifyComponent>
+            <SpotifyComponent Artists="@artists" Albums="@albums" Songs="@songs"></SpotifyComponent>
         </ChildContent>
     </MudExpansionPanel>
     <MudExpansionPanel>
         <TitleContent>
             <div class="d-flex">
                 <MudIcon Icon="@Icons.Material.Filled.SavedSearch" class="mr-3" Color="Color.Primary"></MudIcon>
-                <MudText Color="Color.Primary">Latest Search</MudText>
+                <MudText Color="Color.Primary">Latest Searches</MudText>
             </div>
         </TitleContent>
         <ChildContent>
             <MudGrid>
                 <MudItem xs="12" sm="12" md="12">
-                    <MudButton OnClick="UpdateLatest" Variant="Variant.Filled" Color="Color.Primary">Get Latest Search</MudButton>
+                    <MudButton OnClick="UpdateLatestSearchesAsync" Variant="Variant.Filled" Color="Color.Primary">Get Latest Search</MudButton>
                 </MudItem>
             </MudGrid>
-            @if(latestResult!= null)
+            @if(latestSearches != null)
             {
                 <SpotifyComponent 
-                    Artists="@latestResult.ArtistsStore.SelectMany(a => a.Data)"
-                    Albums="@latestResult.AlbumsStore.SelectMany(a => a.Data)"
-                    Songs="@latestResult.SongsStore.SelectMany(a => a.Data)">
+                    Artists="@latestSearches.ArtistsStore.SelectMany(a => a.Items)"
+                    Albums="@latestSearches.AlbumsStore.SelectMany(a => a.Items)"
+                    Songs="@latestSearches.SongsStore.SelectMany(a => a.Items)">
                 </SpotifyComponent>
             }
         </ChildContent>
@@ -49,13 +51,14 @@
 </MudExpansionPanels>
 
 @code {
-    private HubConnection connection;
-    private IEnumerable<Album> albums;
-    private IEnumerable<Song> songs;
-    private IEnumerable<Artist> artists;
+    private HubConnection connection = null!;
 
-    private StoreResult latestResult;
-    private string deviceId = Guid.NewGuid().ToString();
+    private IEnumerable<Album>? albums;
+    private IEnumerable<Song>? songs;
+    private IEnumerable<Artist>? artists;
+
+    private LatestSearches? latestSearches;
+    private string? deviceId;
 
     protected override void OnInitialized()
     {
@@ -64,10 +67,11 @@
             .WithUrl(url)
             .WithAutomaticReconnect()
             .Build();
-        connection.On<IEnumerable<Album>>("albumNews", OnAlbumProcessed);
-        connection.On<IEnumerable<Song>>("songsNews", OnSongsProcessed);
-        connection.On<IEnumerable<Artist>>("artistsNews", OnArtistsProcessed);
-        connection.On<string>("UpdateDeviceId", SetDeviceId);
+
+        connection.On<IEnumerable<Album>>(Constants.AlbumsAvailable, OnAlbumsAvailableAsync);
+        connection.On<IEnumerable<Song>>(Constants.SongsAvailable, OnSongsAvailableAsync);
+        connection.On<IEnumerable<Artist>>(Constants.ArtistsAvailable, OnArtistsAvailableAsync);
+        connection.On<string>(Constants.UpdateDeviceId, SetDeviceId);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -89,31 +93,34 @@
         StateHasChanged();
     }
 
-    private Task OnAlbumProcessed(IEnumerable<Album> @event)
+    private Task OnAlbumsAvailableAsync(IEnumerable<Album> @event)
     {
         albums = @event;
         StateHasChanged();
+
         return Task.CompletedTask;
     }
 
-    private Task OnArtistsProcessed(IEnumerable<Artist> @event)
+    private Task OnArtistsAvailableAsync(IEnumerable<Artist> @event)
     {
         artists = @event;
         StateHasChanged();
+
         return Task.CompletedTask;
     }
 
-    private Task OnSongsProcessed(IEnumerable<Song> @event)
+    private Task OnSongsAvailableAsync(IEnumerable<Song> @event)
     {
         songs = @event;
         StateHasChanged();
+
         return Task.CompletedTask;
     }
 
-    private async Task UpdateLatest()
+    private async Task UpdateLatestSearchesAsync()
     {
-        // Aggiorna le ultime ricerche
-        latestResult = await daprClient.InvokeMethodAsync<StoreResult>(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/latest");
+        // Updates the latest searches.
+        latestSearches = await daprClient.InvokeMethodAsync<LatestSearches>(HttpMethod.Get, "spotifybackend", $"api/Spotify/{deviceId}/latest");
         StateHasChanged();
     }
 }

@@ -2,7 +2,9 @@ using System.Net.Mime;
 using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
+using Spotify.Shared;
 using Spotify.Shared.Models;
+using Spotify.Shared.Models.Notifications;
 using SpotifySearchRequest = SpotifyAPI.Web.SearchRequest;
 
 namespace SpotifySongs.WebApi.Controllers;
@@ -19,7 +21,7 @@ public class SearchController : ControllerBase
         this.daprClient = daprClient;
     }
 
-    [Topic("pubsub", "search")]
+    [Topic(Constants.PubSubName, Constants.SearchTopic)]
     [HttpPost]
     public async Task<IActionResult> Search(SearchRequest searchRequest)
     {
@@ -64,7 +66,27 @@ public class SearchController : ControllerBase
         }).Take(3).ToList();
 
         if (songs != null)
-            await daprClient.PublishEventAsync("pubsub", "SongResearched", new SongNotification { Data = songs, DeviceId = searchRequest.DeviceId });
+        {
+            await daprClient.PublishEventAsync(Constants.PubSubName, Constants.SongsSearched, new SongNotification
+            {
+                Items = songs,
+                DeviceId = searchRequest.DeviceId
+            });
+
+            // Store the last 5 searches.
+            var storeKey = $"latest-{searchRequest.DeviceId}";
+            var latestSearches = await daprClient.GetStateAsync<List<SongStore>>(Constants.StoreName, storeKey) ?? new();
+
+            var songStore = new SongStore
+            {
+                Items = songs,
+                DeviceId = searchRequest.DeviceId,
+                SearchText = searchRequest.SearchText
+            };
+
+            latestSearches.Insert(0, songStore);
+            await daprClient.SaveStateAsync(Constants.StoreName, storeKey, latestSearches.Take(5));
+        }
 
         return NoContent();
     }
@@ -72,7 +94,9 @@ public class SearchController : ControllerBase
     [HttpGet("latest/{deviceId}")]
     public async Task<IActionResult> GetLatestAsync([FromRoute] string deviceId)
     {
-        var latestStore = await daprClient.GetStateAsync<List<SongStore>>("state-managment", $"latest-{deviceId}") ?? new List<SongStore>();
-        return Ok(latestStore);
+        var storeKey = $"latest-{deviceId}";
+        var latestSearches = await daprClient.GetStateAsync<List<SongStore>>(Constants.StoreName, storeKey) ?? new List<SongStore>();
+
+        return Ok(latestSearches);
     }
 }

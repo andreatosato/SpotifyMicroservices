@@ -3,6 +3,7 @@ using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
+using Spotify.Shared;
 using Spotify.Shared.Models;
 using SpotifyAPI.Web;
 using SpotifyBackend.Settings;
@@ -35,26 +36,27 @@ public class SpotifyController : ControllerBase
         var response = await new OAuthClient(config).RequestToken(request);
 
         var searchRequest = new SearchRequest(deviceId, response.AccessToken, searchText);
-        await daprClient.PublishEventAsync("pubsub", "search", searchRequest);
+        await daprClient.PublishEventAsync(Constants.PubSubName, Constants.SearchTopic, searchRequest);
 
         return Accepted();
     }
 
     [HttpGet("{deviceId}/latest")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(LatestSearches), StatusCodes.Status200OK)]
     [ProducesDefaultResponseType]
     public async Task<IActionResult> GetLatest(string deviceId)
     {
-        var taskAlbums = daprClient.InvokeMethodAsync<List<AlbumStore>>(HttpMethod.Get, "albums", $"api/search/latest/{deviceId}");
-        var taskSongs = daprClient.InvokeMethodAsync<List<SongStore>>(HttpMethod.Get, "songs", $"api/search/latest/{deviceId}");
-        var taskArtists = daprClient.InvokeMethodAsync<List<ArtistStore>>(HttpMethod.Get, "artists", $"api/search/latest/{deviceId}");
+        var latestAlbumsTask = daprClient.InvokeMethodAsync<IEnumerable<AlbumStore>>(HttpMethod.Get, "albums", $"api/search/latest/{deviceId}");
+        var latestSongsTask = daprClient.InvokeMethodAsync<IEnumerable<SongStore>>(HttpMethod.Get, "songs", $"api/search/latest/{deviceId}");
+        var latestsArtistsTask = daprClient.InvokeMethodAsync<IEnumerable<ArtistStore>>(HttpMethod.Get, "artists", $"api/search/latest/{deviceId}");
 
-        await Task.WhenAll(taskAlbums, taskSongs, taskArtists);
-        return Ok(new StoreResult
+        await Task.WhenAll(latestAlbumsTask, latestSongsTask, latestsArtistsTask);
+
+        return Ok(new LatestSearches
         {
-            AlbumsStore = await taskAlbums,
-            ArtistsStore = await taskArtists,
-            SongsStore = await taskSongs
+            AlbumsStore = await latestAlbumsTask,
+            SongsStore = await latestSongsTask,
+            ArtistsStore = await latestsArtistsTask
         });
     }
 }

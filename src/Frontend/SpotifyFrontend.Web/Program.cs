@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
 using MudBlazor.Services;
-using Spotify.Shared.Models;
+using Spotify.Shared;
+using Spotify.Shared.Models.Notifications;
 using SpotifyFrontend.Web.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,12 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
 }
 
-
 app.UseStaticFiles();
+
 app.UseCloudEvents();
+
 app.UseRouting();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
@@ -27,29 +30,24 @@ app.UseEndpoints(endpoints =>
     endpoints.MapBlazorHub();
     endpoints.MapFallbackToPage("/_Host");
     endpoints.MapSubscribeHandler();
+
     endpoints.MapPost("albums", async (AlbumNotification albumNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == albumNotification.DeviceId).First();
-        await notificationHub.Clients.Client(albumNotification.DeviceId).SendAsync("albumNews", albumNotification.Data);
-        //await notificationHub.Clients.All.SendAsync("albumNews", albumNotification.Data);
+        await notificationHub.Clients.Client(albumNotification.DeviceId).SendAsync(Constants.AlbumsAvailable, albumNotification.Items);
     })
-    .WithTopic("pubsub", "AlbumsResearched");
+    .WithTopic(Constants.PubSubName, Constants.AlbumsSearched);
 
     endpoints.MapPost("songs", async (SongNotification songNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        await notificationHub.Clients.Client(songNotification.DeviceId).SendAsync("songsNews", songNotification.Data);
-        //await notificationHub.Clients.All.SendAsync("songsNews", songNotification.Data);
+        await notificationHub.Clients.Client(songNotification.DeviceId).SendAsync(Constants.SongsAvailable, songNotification.Items);
     })
-    .WithTopic("pubsub", "SongResearched");
+    .WithTopic(Constants.PubSubName, Constants.SongsSearched);
 
     endpoints.MapPost("artists", async (ArtistNotification artistNotification, IHubContext<NotificationHub> notificationHub) =>
     {
-        //var deviceIdConnection = clientService.DeviceClient.Where(t => t.DeviceId == artistNotification.DeviceId).First();
-        await notificationHub.Clients.Client(artistNotification.DeviceId).SendAsync("artistsNews", artistNotification.Data);
-        //await notificationHub.Clients.All.SendAsync("artistsNews", artistNotification.Data);
+        await notificationHub.Clients.Client(artistNotification.DeviceId).SendAsync(Constants.ArtistsAvailable, artistNotification.Items);
     })
-    .WithTopic("pubsub", "ArtistResearched");
-
+    .WithTopic(Constants.PubSubName, Constants.ArtistsSearched);
 });
 
 app.Run();
