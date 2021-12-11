@@ -6,11 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SpotifyBackend/SpotifyBackend.csproj", "SpotifyBackend/"]
+COPY ["Gateways/SpotifyBackend/SpotifyBackend.csproj", "Gateways/SpotifyBackend/"]
 COPY ["Shared/Spotify.Shared/Spotify.Shared.csproj", "Spotify.Shared/"]
-RUN dotnet restore "SpotifyBackend/SpotifyBackend.csproj"
+RUN dotnet restore "Gateways/SpotifyBackend/SpotifyBackend.csproj"
 COPY . .
-WORKDIR "/src/SpotifyBackend"
+WORKDIR "/src/Gateways/SpotifyBackend"
 RUN dotnet build "SpotifyBackend.csproj" -c Release -o /app/build
 
 FROM build AS publish

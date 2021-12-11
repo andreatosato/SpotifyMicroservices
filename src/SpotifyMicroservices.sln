@@ -43,6 +43,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "components", "components", 
 		dapr\components\secrets-store.yaml = dapr\components\secrets-store.yaml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{83D2A6CE-08CB-400F-94F6-286B0FE67C01}"
+	ProjectSection(SolutionItems) = preProject
+		..\Deploy\buildDocker.txt = ..\Deploy\buildDocker.txt
+		..\Deploy\components.yaml = ..\Deploy\components.yaml
+		..\Deploy\CreateEnv.ps1 = ..\Deploy\CreateEnv.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,0 +1,7 @@
+// Run in src folder
+
+az acr build -t albums:xmas -r spotifyxmas -f APIs/SpotifyAlbums.WebApi/Dockerfile .
+az acr build -t artists:xmas -r spotifyxmas -f APIs/SpotifyArtists.WebApi/Dockerfile .
+az acr build -t songs:xmas -r spotifyxmas -f APIs/SpotifySongs.WebApi/Dockerfile .
+az acr build -t backend:xmas -r spotifyxmas -f Gateways/SpotifyBackend/Dockerfile .
+az acr build -t frontend:xmas -r spotifyxmas -f Frontend/SpotifyFrontend.Web/Dockerfile .

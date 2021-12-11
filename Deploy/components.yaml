@@ -1,0 +1,28 @@
+- name: pubsub
+  type: pubsub.azure.servicebus
+  version: v1
+  metadata:
+  - name: connectionString
+    secretRef: connectionstring
+- name: state-management
+  type: state.azure.blobstorage
+  version: v1
+  metadata:
+  - name: accountName
+    value: "containerappstosato"
+  - name: accountKey
+    secretRef: accountkey
+  - name: containerName
+    value: "dapr"
+- name: appsecrets
+  type: secretstores.azure.keyvault
+  version: v1
+  metadata:
+  - name: vaultName
+    value: "https://spotifyxmas.vault.azure.net/"
+  - name: azureTenantId
+    secretRef: azuretenantid
+  - name: azureClientId
+    secretRef: azureclientid
+  - name: azureClientSecret
+    secretRef: azureclientsecret
