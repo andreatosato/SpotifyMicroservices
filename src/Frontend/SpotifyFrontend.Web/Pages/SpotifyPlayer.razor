@@ -62,7 +62,7 @@
 
     protected override void OnInitialized()
     {
-        var url = "http://spotifyfrontend/notification";
+        var url = "http://127.0.0.1/notification";
         connection = new HubConnectionBuilder()
             .WithUrl(url)
             .WithAutomaticReconnect()
