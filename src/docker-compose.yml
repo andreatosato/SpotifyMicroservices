@@ -8,7 +8,7 @@ services:
   
   spotifyfrontend-dapr:
     container_name: spotifyfrontend-dapr
-    image: "daprio/daprd:1.5.0"
+    image: "daprio/daprd:1.5.1"
     network_mode: "service:spotifyfrontend"
     depends_on:
       - spotifyfrontend
@@ -24,7 +24,7 @@ services:
   
   spotifybackend-dapr:
     container_name: spotifybackend-dapr
-    image: "daprio/daprd:1.5.0"
+    image: "daprio/daprd:1.5.1"
     network_mode: "service:spotifybackend"
     depends_on:
       - spotifybackend
@@ -41,7 +41,7 @@ services:
 
   albums-dapr:
     container_name: albums-dapr
-    image: "daprio/daprd:1.5.0"
+    image: "daprio/daprd:1.5.1"
     network_mode: "service:albums"
     depends_on:
       - albums
@@ -58,7 +58,7 @@ services:
 
   artists-dapr:
     container_name: artists-dapr
-    image: "daprio/daprd:1.5.0"
+    image: "daprio/daprd:1.5.1"
     network_mode: "service:artists"
     depends_on:
       - albums
@@ -75,7 +75,7 @@ services:
 
   songs-dapr:
     container_name: songs-dapr
-    image: "daprio/daprd:1.5.0"
+    image: "daprio/daprd:1.5.1"
     network_mode: "service:songs"
     depends_on:
       - songs
